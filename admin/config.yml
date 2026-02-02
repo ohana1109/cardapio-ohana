@@ -1,0 +1,31 @@
+backend:
+  name: github
+  repo: ohana1109/ohana-cardapio        # ex: jonybether/ohana-cardapio
+  branch: main                     # ou master
+
+media_folder: "assets/img/uploads"
+public_folder: "/assets/img/uploads"
+
+publish_mode: simple
+
+collections:
+  - name: "cardapio"
+    label: "Cardápio"
+    files:
+      - name: "menu"
+        label: "Itens do Cardápio"
+        file: "data/menu.json"
+        format: "json"
+        fields:
+          - label: "Itens"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.name}} — R$ {{fields.price}}"
+            fields:
+              - { label: "ID (único)", name: "id", widget: "string" }
+              - { label: "Ativo (pausar/mostrar)", name: "active", widget: "boolean", default: true }
+              - { label: "Categoria", name: "cat", widget: "select", options: ["executivos","mineira","parmegiana","alacarte","sucos","refri","cervejas","sobremesas"] }
+              - { label: "Nome", name: "name", widget: "string" }
+              - { label: "Descrição", name: "desc", widget: "text", required: false }
+              - { label: "Preço", name: "price", widget: "number", value_type: "float", min: 0 }
+              - { label: "Imagem", name: "img", widget: "image", required: false }

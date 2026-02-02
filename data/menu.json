@@ -1,0 +1,436 @@
+{
+  "items": [
+    {
+      "id": "ex-costela",
+      "name": "Costela assada (boi)",
+      "cat": "executivos",
+      "price": 39.0,
+      "img": "assets/img/costela-assada.jpg",
+      "desc": "Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.",
+      "active": true
+    },
+    {
+      "id": "ex-mignon",
+      "name": "Filé mignon grelhado ou à milanesa",
+      "cat": "executivos",
+      "price": 46.0,
+      "img": "assets/img/mignon.jpg",
+      "desc": "Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.",
+      "active": true
+    },
+    {
+      "id": "ex-frango",
+      "name": "Filé de frango grelhado ou à milanesa",
+      "cat": "executivos",
+      "price": 31.0,
+      "img": "assets/img/frango.jpg",
+      "desc": "Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.",
+      "active": true
+    },
+    {
+      "id": "ex-tilapia",
+      "name": "Filé de tilápia grelhado ou à milanesa",
+      "cat": "executivos",
+      "price": 38.0,
+      "img": "assets/img/tilapia.jpg",
+      "desc": "Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.",
+      "active": true
+    },
+    {
+      "id": "ex-sobrecoxa",
+      "name": "Sobrecoxa desossada",
+      "cat": "executivos",
+      "price": 34.0,
+      "img": "assets/img/sobrecoxa.jpg",
+      "desc": "Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.",
+      "active": true
+    },
+    {
+      "id": "ex-pernil",
+      "name": "Pernil acebolado",
+      "cat": "executivos",
+      "price": 32.0,
+      "img": "assets/img/pernil.jpg",
+      "desc": "Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.",
+      "active": true
+    },
+    {
+      "id": "ex-shiitake",
+      "name": "Vegano: shiitake (cogumelo)",
+      "cat": "executivos",
+      "price": 37.0,
+      "img": "assets/img/shiitake.jpg",
+      "desc": "Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.",
+      "active": true
+    },
+    {
+      "id": "ex-omelete",
+      "name": "Vegetariano: omelete (consulte opções)",
+      "cat": "executivos",
+      "price": 34.0,
+      "img": "assets/img/omelete.jpg",
+      "desc": "Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.",
+      "active": true
+    },
+    {
+      "id": "ex-fitness",
+      "name": "Fitness: grelhado + salada caprichada (consulte opções)",
+      "cat": "executivos",
+      "price": 30.0,
+      "img": "assets/img/fitness.jpg",
+      "desc": "Opção leve com salada caprichada — consulte opções.",
+      "active": true
+    },
+    {
+      "id": "ex-frango-grat",
+      "name": "Frango gratinado (queijo, tomate, orégano)",
+      "cat": "executivos",
+      "price": 35.0,
+      "img": "assets/img/frango-gratinado.jpg",
+      "desc": "Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.",
+      "active": true
+    },
+    {
+      "id": "ex-mignon-grat",
+      "name": "Mignon gratinado (queijo, tomate, orégano)",
+      "cat": "executivos",
+      "price": 48.0,
+      "img": "assets/img/mignon-gratinado.jpg",
+      "desc": "Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.",
+      "active": true
+    },
+    {
+      "id": "ex-strog",
+      "name": "Strogonoff de filé mignon",
+      "cat": "executivos",
+      "price": 47.0,
+      "img": "assets/img/strogonoff-mignon.jpg",
+      "desc": "Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.",
+      "active": true
+    },
+    {
+      "id": "mi-costela",
+      "name": "Costela mineira (serve 1 pessoa)",
+      "cat": "mineira",
+      "price": 44.0,
+      "img": "assets/img/mineiro.jpg",
+      "desc": "Acompanha tutu de feijão, couve, arroz, torresmo e ovo frito.",
+      "active": true
+    },
+    {
+      "id": "mi-pernil",
+      "name": "Pernil mineiro (serve 1 pessoa)",
+      "cat": "mineira",
+      "price": 38.0,
+      "img": "assets/img/mineiro.jpg",
+      "desc": "Acompanha tutu de feijão, couve, arroz, torresmo e ovo frito.",
+      "active": true
+    },
+    {
+      "id": "mi-frango",
+      "name": "Frango mineiro (serve 1 pessoa)",
+      "cat": "mineira",
+      "price": 37.0,
+      "img": "assets/img/mineiro.jpg",
+      "desc": "Acompanha tutu de feijão, couve, arroz, torresmo e ovo frito.",
+      "active": true
+    },
+    {
+      "id": "mi-tilapia",
+      "name": "Tilápia mineira (serve 1 pessoa)",
+      "cat": "mineira",
+      "price": 44.0,
+      "img": "assets/img/mineiro.jpg",
+      "desc": "Acompanha tutu de feijão, couve, arroz, torresmo e ovo frito.",
+      "active": true
+    },
+    {
+      "id": "mi-mignon",
+      "name": "Mignon mineiro (serve 1 pessoa)",
+      "cat": "mineira",
+      "price": 52.0,
+      "img": "assets/img/mineiro.jpg",
+      "desc": "Acompanha tutu de feijão, couve, arroz, torresmo e ovo frito.",
+      "active": true
+    },
+    {
+      "id": "pa-mignon",
+      "name": "Parmegiana de filé mignon",
+      "cat": "parmegiana",
+      "price": 52.0,
+      "img": "assets/img/parmegiana.jpg",
+      "desc": "Acompanha arroz e fritas.",
+      "active": true
+    },
+    {
+      "id": "pa-tilapia",
+      "name": "Parmegiana de filé de tilápia",
+      "cat": "parmegiana",
+      "price": 37.0,
+      "img": "assets/img/parmegiana.jpg",
+      "desc": "Acompanha arroz e fritas.",
+      "active": true
+    },
+    {
+      "id": "pa-frango",
+      "name": "Parmegiana de filé de frango",
+      "cat": "parmegiana",
+      "price": 38.0,
+      "img": "assets/img/parmegiana.jpg",
+      "desc": "Acompanha arroz e fritas.",
+      "active": true
+    },
+    {
+      "id": "pa-berinjela",
+      "name": "Parmegiana de berinjela",
+      "cat": "parmegiana",
+      "price": 46.0,
+      "img": "assets/img/parmegiana.jpg",
+      "desc": "Acompanha arroz e fritas.",
+      "active": true
+    },
+    {
+      "id": "ac-parm",
+      "name": "Filé mignon à parmegiana (2 pessoas)",
+      "cat": "alacarte",
+      "price": 108.0,
+      "img": "assets/img/a-la-carte.jpg",
+      "desc": "Arroz e fritas.",
+      "active": true
+    },
+    {
+      "id": "ac-cubana",
+      "name": "Filé à cubana (2 pessoas)",
+      "cat": "alacarte",
+      "price": 112.0,
+      "img": "assets/img/a-la-carte.jpg",
+      "desc": "Arroz, fritas, 2 filés mignon à milanesa, banana frita, pêssego em calda e ervilha na manteiga.",
+      "active": true
+    },
+    {
+      "id": "ac-mineiro",
+      "name": "Costela ou pernil mineiro (2 pessoas)",
+      "cat": "alacarte",
+      "price": 98.0,
+      "img": "assets/img/a-la-carte.jpg",
+      "desc": "Tutu de feijão, couve, ovo frito, torresmo, banana à milanesa e arroz.",
+      "active": true
+    },
+    {
+      "id": "ac-salada",
+      "name": "Salada especial da casa (consulte opções)",
+      "cat": "alacarte",
+      "price": 15.0,
+      "img": "assets/img/salada.jpg",
+      "desc": "Consulte as opções disponíveis.",
+      "active": true
+    },
+    {
+      "id": "su-abacaxi",
+      "name": "Suco (1 fruta) — Abacaxi",
+      "cat": "sucos",
+      "price": 10.0,
+      "img": "assets/img/suco.jpg",
+      "desc": "Jarra.",
+      "active": true
+    },
+    {
+      "id": "su-laranja",
+      "name": "Suco (1 fruta) — Laranja",
+      "cat": "sucos",
+      "price": 10.0,
+      "img": "assets/img/suco.jpg",
+      "desc": "Jarra.",
+      "active": true
+    },
+    {
+      "id": "su-maracuja",
+      "name": "Suco (1 fruta) — Maracujá",
+      "cat": "sucos",
+      "price": 10.0,
+      "img": "assets/img/suco.jpg",
+      "desc": "Jarra.",
+      "active": true
+    },
+    {
+      "id": "su-limao",
+      "name": "Suco (1 fruta) — Limão",
+      "cat": "sucos",
+      "price": 10.0,
+      "img": "assets/img/suco.jpg",
+      "desc": "Jarra.",
+      "active": true
+    },
+    {
+      "id": "su-morango",
+      "name": "Suco (1 fruta) — Morango",
+      "cat": "sucos",
+      "price": 10.0,
+      "img": "assets/img/suco.jpg",
+      "desc": "Jarra.",
+      "active": true
+    },
+    {
+      "id": "su-2frutas",
+      "name": "Suco com 2 frutas",
+      "cat": "sucos",
+      "price": 13.0,
+      "img": "assets/img/suco.jpg",
+      "desc": "Jarra.",
+      "active": true
+    },
+    {
+      "id": "su-acai",
+      "name": "Suco com açaí",
+      "cat": "sucos",
+      "price": 14.0,
+      "img": "assets/img/suco.jpg",
+      "desc": "Jarra.",
+      "active": true
+    },
+    {
+      "id": "su-limonada",
+      "name": "Limonada suíça",
+      "cat": "sucos",
+      "price": 14.0,
+      "img": "assets/img/limonada.jpg",
+      "desc": "Jarra.",
+      "active": true
+    },
+    {
+      "id": "su-detox",
+      "name": "Detox",
+      "cat": "sucos",
+      "price": 9.0,
+      "img": "assets/img/detox.jpg",
+      "desc": "Abacaxi, hortelã, couve, mel e gengibre.",
+      "active": true
+    },
+    {
+      "id": "su-imunidade",
+      "name": "Imunidade",
+      "cat": "sucos",
+      "price": 11.0,
+      "img": "assets/img/detox.jpg",
+      "desc": "Laranja, cenoura e gengibre.",
+      "active": true
+    },
+    {
+      "id": "rf-coca",
+      "name": "Coca Cola",
+      "cat": "refri",
+      "price": 8.0,
+      "img": "assets/img/refrigerante.jpg",
+      "desc": "",
+      "active": true
+    },
+    {
+      "id": "rf-zero",
+      "name": "Coca Zero",
+      "cat": "refri",
+      "price": 8.0,
+      "img": "assets/img/refrigerante.jpg",
+      "desc": "",
+      "active": true
+    },
+    {
+      "id": "rf-fanta",
+      "name": "Fanta",
+      "cat": "refri",
+      "price": 8.0,
+      "img": "assets/img/refrigerante.jpg",
+      "desc": "",
+      "active": true
+    },
+    {
+      "id": "rf-guarana",
+      "name": "Guaraná Antarctica",
+      "cat": "refri",
+      "price": 8.0,
+      "img": "assets/img/refrigerante.jpg",
+      "desc": "",
+      "active": true
+    },
+    {
+      "id": "rf-tonica",
+      "name": "Água tônica",
+      "cat": "refri",
+      "price": 8.0,
+      "img": "assets/img/refrigerante.jpg",
+      "desc": "",
+      "active": true
+    },
+    {
+      "id": "rf-h2o",
+      "name": "H2O",
+      "cat": "refri",
+      "price": 11.0,
+      "img": "assets/img/refrigerante.jpg",
+      "desc": "",
+      "active": true
+    },
+    {
+      "id": "rf-agua",
+      "name": "Água",
+      "cat": "refri",
+      "price": 4.0,
+      "img": "assets/img/refrigerante.jpg",
+      "desc": "",
+      "active": true
+    },
+    {
+      "id": "rf-agua-gas",
+      "name": "Água com gás",
+      "cat": "refri",
+      "price": 6.0,
+      "img": "assets/img/refrigerante.jpg",
+      "desc": "",
+      "active": true
+    },
+    {
+      "id": "cv-original",
+      "name": "Cerveja (lata) — Original",
+      "cat": "cervejas",
+      "price": 14.0,
+      "img": "assets/img/cerveja.jpg",
+      "desc": "",
+      "active": true
+    },
+    {
+      "id": "cv-heineken",
+      "name": "Cerveja (lata) — Heineken",
+      "cat": "cervejas",
+      "price": 15.0,
+      "img": "assets/img/cerveja.jpg",
+      "desc": "",
+      "active": true
+    },
+    {
+      "id": "sb-acai",
+      "name": "Taça especial açaí",
+      "cat": "sobremesas",
+      "price": 14.0,
+      "img": "assets/img/acai.jpg",
+      "desc": "",
+      "active": true
+    },
+    {
+      "id": "sb-mousse",
+      "name": "Mousse (maracujá ou morango)",
+      "cat": "sobremesas",
+      "price": 19.0,
+      "img": "assets/img/mousse.jpg",
+      "desc": "",
+      "active": true
+    },
+    {
+      "id": "sb-pudim",
+      "name": "Pudim doce de leite",
+      "cat": "sobremesas",
+      "price": 23.0,
+      "img": "assets/img/pudim.jpg",
+      "desc": "",
+      "active": true
+    }
+  ]
+}
