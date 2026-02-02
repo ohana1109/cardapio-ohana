@@ -1,6 +1,6 @@
 backend:
-  name: github
-  repo: ohana1109/ohana-cardapio        # ex: jonybether/ohana-cardapio
+  name: git-gateway
+  repo: ohana1109/cardapio-ohana        # ex: jonybether/ohana-cardapio
   branch: main                     # ou master
 
 media_folder: "assets/img/uploads"
