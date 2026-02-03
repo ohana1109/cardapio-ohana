@@ -1,124 +1,63 @@
 /*
-  Ohana Snack House — Cardápio Premium (estático)
-  - categorias (chips) + agrupamento por seção
-  - favoritos (localStorage)
-  - sacola com contador, +/−, remover
-  - observação e envio por WhatsApp
-  - QR Code (modal) via qrcodejs
-  - PWA: install prompt (opcional)
+  Ohana Snack House — Cardápio Premium
+  Versão: Observações por Item
 */
 
 const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
-// ✅ CONFIG
 const CONFIG = {
-  whatsapp: "5535996700123", // Ex: 5511999999999 (sem + e sem espaços)
+  whatsapp: "5535996700123", 
   businessName: "Ohana Snack House",
+  waHeader: "Olá! Gostaria de fazer um pedido:",
+  
+  // Configuração dos Horários (Todos os dias das 11h às 15h)
+  hours: {
+    0: { open: '11:00', close: '15:00' }, // Domingo
+    1: { open: '11:00', close: '15:00' }, // Segunda
+    2: { open: '11:00', close: '15:00' }, // Terça
+    3: { open: '11:00', close: '15:00' }, // Quarta
+    4: { open: '11:00', close: '15:00' }, // Quinta
+    5: { open: '11:00', close: '15:00' }, // Sexta
+    6: { open: '11:00', close: '15:00' }  // Sábado
+  }
 };
 
-// ✅ CATEGORIAS
+// CATEGORIAS
 const CATS = [
-  { id: 'executivos', name: 'Pratos Executivos' },
-  { id: 'mineira', name: 'Comida Mineira' },
+  { id: 'executivos', name: 'Executivos' },
+  { id: 'mineira', name: 'Especiais Mineiros' },
   { id: 'parmegiana', name: 'Parmegianas' },
-  { id: 'alacarte', name: 'À la carte (2 pessoas)' },
-  { id: 'sucos', name: 'Sucos' },
+  { id: 'alacarte', name: 'À La Carte (2 Pessoas)' },
+  { id: 'sucos', name: 'Sucos Naturais' },
   { id: 'refri', name: 'Refrigerantes' },
-  { id: 'cervejas', name: 'Cervejas (lata)' },
+  { id: 'cervejas', name: 'Cervejas' },
   { id: 'sobremesas', name: 'Sobremesas' },
 ];
 
-// ✅ ITENS (extraídos do PDF)
+// FALLBACK DATA
 const FALLBACK_MENU = [
-  // Executivos
-  { id:'ex-costela', name:'Costela assada (boi)', cat:'executivos', price:39.00, img:'assets/img/costela-assada.jpg', desc:'Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.' },
-  { id:'ex-mignon', name:'Filé mignon grelhado ou à milanesa', cat:'executivos', price:46.00, img:'assets/img/mignon.jpg', desc:'Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.' },
-  { id:'ex-frango', name:'Filé de frango grelhado ou à milanesa', cat:'executivos', price:31.00, img:'assets/img/frango.jpg', desc:'Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.' },
-  { id:'ex-tilapia', name:'Filé de tilápia grelhado ou à milanesa', cat:'executivos', price:38.00, img:'assets/img/tilapia.jpg', desc:'Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.' },
-  { id:'ex-sobrecoxa', name:'Sobrecoxa desossada', cat:'executivos', price:34.00, img:'assets/img/sobrecoxa.jpg', desc:'Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.' },
-  { id:'ex-pernil', name:'Pernil acebolado', cat:'executivos', price:32.00, img:'assets/img/pernil.jpg', desc:'Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.' },
-  { id:'ex-shiitake', name:'Vegano: shiitake (cogumelo)', cat:'executivos', price:37.00, img:'assets/img/shiitake.jpg', desc:'Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.' },
-  { id:'ex-omelete', name:'Vegetariano: omelete (consulte opções)', cat:'executivos', price:34.00, img:'assets/img/omelete.jpg', desc:'Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.' },
-  { id:'ex-fitness', name:'Fitness: grelhado + salada caprichada (consulte opções)', cat:'executivos', price:30.00, img:'assets/img/fitness.jpg', desc:'Opção leve com salada caprichada — consulte opções.' },
-  { id:'ex-frango-grat', name:'Frango gratinado (queijo, tomate, orégano)', cat:'executivos', price:35.00, img:'assets/img/frango-gratinado.jpg', desc:'Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.' },
-  { id:'ex-mignon-grat', name:'Mignon gratinado (queijo, tomate, orégano)', cat:'executivos', price:48.00, img:'assets/img/mignon-gratinado.jpg', desc:'Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.' },
-  { id:'ex-strog', name:'Strogonoff de filé mignon', cat:'executivos', price:47.00, img:'assets/img/strogonoff-mignon.jpg', desc:'Acompanha arroz, feijão, fritas OU mandioca, legumes no vapor e mix de folhas.' },
-
-  // Mineira
-  { id:'mi-costela', name:'Costela mineira (serve 1 pessoa)', cat:'mineira', price:44.00, img:'assets/img/mineiro.jpg', desc:'Acompanha tutu de feijão, couve, arroz, torresmo e ovo frito.' },
-  { id:'mi-pernil', name:'Pernil mineiro (serve 1 pessoa)', cat:'mineira', price:38.00, img:'assets/img/mineiro.jpg', desc:'Acompanha tutu de feijão, couve, arroz, torresmo e ovo frito.' },
-  { id:'mi-frango', name:'Frango mineiro (serve 1 pessoa)', cat:'mineira', price:37.00, img:'assets/img/mineiro.jpg', desc:'Acompanha tutu de feijão, couve, arroz, torresmo e ovo frito.' },
-  { id:'mi-tilapia', name:'Tilápia mineira (serve 1 pessoa)', cat:'mineira', price:44.00, img:'assets/img/mineiro.jpg', desc:'Acompanha tutu de feijão, couve, arroz, torresmo e ovo frito.' },
-  { id:'mi-mignon', name:'Mignon mineiro (serve 1 pessoa)', cat:'mineira', price:52.00, img:'assets/img/mineiro.jpg', desc:'Acompanha tutu de feijão, couve, arroz, torresmo e ovo frito.' },
-
-  // Parmegianas
-  { id:'pa-mignon', name:'Parmegiana de filé mignon', cat:'parmegiana', price:52.00, img:'assets/img/parmegiana.jpg', desc:'Acompanha arroz e fritas.' },
-  { id:'pa-tilapia', name:'Parmegiana de filé de tilápia', cat:'parmegiana', price:37.00, img:'assets/img/parmegiana.jpg', desc:'Acompanha arroz e fritas.' },
-  { id:'pa-frango', name:'Parmegiana de filé de frango', cat:'parmegiana', price:38.00, img:'assets/img/parmegiana.jpg', desc:'Acompanha arroz e fritas.' },
-  { id:'pa-berinjela', name:'Parmegiana de berinjela', cat:'parmegiana', price:46.00, img:'assets/img/parmegiana.jpg', desc:'Acompanha arroz e fritas.' },
-
-  // À la carte
-  { id:'ac-parm', name:'Filé mignon à parmegiana (2 pessoas)', cat:'alacarte', price:108.00, img:'assets/img/a-la-carte.jpg', desc:'Arroz e fritas.' },
-  { id:'ac-cubana', name:'Filé à cubana (2 pessoas)', cat:'alacarte', price:112.00, img:'assets/img/a-la-carte.jpg', desc:'Arroz, fritas, 2 filés mignon à milanesa, banana frita, pêssego em calda e ervilha na manteiga.' },
-  { id:'ac-mineiro', name:'Costela ou pernil mineiro (2 pessoas)', cat:'alacarte', price:98.00, img:'assets/img/a-la-carte.jpg', desc:'Tutu de feijão, couve, ovo frito, torresmo, banana à milanesa e arroz.' },
-  { id:'ac-salada', name:'Salada especial da casa (consulte opções)', cat:'alacarte', price:15.00, img:'assets/img/salada.jpg', desc:'Consulte as opções disponíveis.' },
-
-  // Sucos
-  { id:'su-abacaxi', name:'Suco (1 fruta) — Abacaxi', cat:'sucos', price:10.00, img:'assets/img/suco.jpg', desc:'Jarra.' },
-  { id:'su-laranja', name:'Suco (1 fruta) — Laranja', cat:'sucos', price:10.00, img:'assets/img/suco.jpg', desc:'Jarra.' },
-  { id:'su-maracuja', name:'Suco (1 fruta) — Maracujá', cat:'sucos', price:10.00, img:'assets/img/suco.jpg', desc:'Jarra.' },
-  { id:'su-limao', name:'Suco (1 fruta) — Limão', cat:'sucos', price:10.00, img:'assets/img/suco.jpg', desc:'Jarra.' },
-  { id:'su-morango', name:'Suco (1 fruta) — Morango', cat:'sucos', price:10.00, img:'assets/img/suco.jpg', desc:'Jarra.' },
-  { id:'su-2frutas', name:'Suco com 2 frutas', cat:'sucos', price:13.00, img:'assets/img/suco.jpg', desc:'Jarra.' },
-  { id:'su-acai', name:'Suco com açaí', cat:'sucos', price:14.00, img:'assets/img/suco.jpg', desc:'Jarra.' },
-  { id:'su-limonada', name:'Limonada suíça', cat:'sucos', price:14.00, img:'assets/img/limonada.jpg', desc:'Jarra.' },
-  { id:'su-detox', name:'Detox', cat:'sucos', price:9.00, img:'assets/img/detox.jpg', desc:'Abacaxi, hortelã, couve, mel e gengibre.' },
-  { id:'su-imunidade', name:'Imunidade', cat:'sucos', price:11.00, img:'assets/img/detox.jpg', desc:'Laranja, cenoura e gengibre.' },
-
-  // Refrigerantes
-  { id:'rf-coca', name:'Coca Cola', cat:'refri', price:8.00, img:'assets/img/refrigerante.jpg', desc:'' },
-  { id:'rf-zero', name:'Coca Zero', cat:'refri', price:8.00, img:'assets/img/refrigerante.jpg', desc:'' },
-  { id:'rf-fanta', name:'Fanta', cat:'refri', price:8.00, img:'assets/img/refrigerante.jpg', desc:'' },
-  { id:'rf-guarana', name:'Guaraná Antarctica', cat:'refri', price:8.00, img:'assets/img/refrigerante.jpg', desc:'' },
-  { id:'rf-tonica', name:'Água tônica', cat:'refri', price:8.00, img:'assets/img/refrigerante.jpg', desc:'' },
-  { id:'rf-h2o', name:'H2O', cat:'refri', price:11.00, img:'assets/img/refrigerante.jpg', desc:'' },
-  { id:'rf-agua', name:'Água', cat:'refri', price:4.00, img:'assets/img/refrigerante.jpg', desc:'' },
-  { id:'rf-agua-gas', name:'Água com gás', cat:'refri', price:6.00, img:'assets/img/refrigerante.jpg', desc:'' },
-
-  // Cervejas
-  { id:'cv-original', name:'Cerveja (lata) — Original', cat:'cervejas', price:14.00, img:'assets/img/cerveja.jpg', desc:'' },
-  { id:'cv-heineken', name:'Cerveja (lata) — Heineken', cat:'cervejas', price:15.00, img:'assets/img/cerveja.jpg', desc:'' },
-
-  // Sobremesas
-  { id:'sb-acai', name:'Taça especial açaí', cat:'sobremesas', price:14.00, img:'assets/img/acai.jpg', desc:'' },
-  { id:'sb-mousse', name:'Mousse (maracujá ou morango)', cat:'sobremesas', price:19.00, img:'assets/img/mousse.jpg', desc:'' },
-  { id:'sb-pudim', name:'Pudim doce de leite', cat:'sobremesas', price:23.00, img:'assets/img/pudim.jpg', desc:'' },
+  { id:'ex-costela', name:'Costela Assada Premium', cat:'executivos', price:39.00, img:'assets/img/costela-assada.jpg', desc:'Costela bovina lentamente assada. Acompanha arroz, feijão, escolha entre fritas ou mandioca, legumes vaporizados e mix de folhas.' },
+  { id:'ex-mignon', name:'Filé Mignon Clássico', cat:'executivos', price:46.00, img:'assets/img/mignon.jpg', desc:'Grelhado ou à milanesa. Com arroz, feijão, fritas/mandioca, legumes e salada.' },
+  { id:'mi-costela', name:'Costela à Mineira', cat:'mineira', price:44.00, img:'assets/img/mineiro.jpg', desc:'A autêntica experiência mineira: tutu, couve, arroz, torresmo crocante e ovo.' },
+  { id:'pa-mignon', name:'Parmegiana de Mignon', cat:'parmegiana', price:52.00, img:'assets/img/parmegiana.jpg', desc:'Molho de tomate artesanal e queijo gratinado. Acompanha arroz e fritas.' },
+  { id:'ac-parm', name:'Parmegiana para Dois', cat:'alacarte', price:108.00, img:'assets/img/a-la-carte.jpg', desc:'Generosa porção de mignon à parmegiana para compartilhar. Arroz e fritas inclusos.' },
+  { id:'sb-pudim', name:'Pudim de Doce de Leite', cat:'sobremesas', price:23.00, img:'assets/img/pudim.jpg', desc:'Textura cremosa inigualável.' },
+  { id:'rf-coca', name:'Coca Cola', cat:'refri', price:8.00, img:'assets/img/refrigerante.jpg', desc:'Lata 350ml.' },
 ];
 
-let MENU = []; // carregado do /data/menu.json (admin). Fallback se falhar.
+let MENU = [];
 
 async function loadMenu(){
   try{
     const res = await fetch('./data/menu.json', { cache: 'no-store' });
-    if(!res.ok) throw new Error('HTTP ' + res.status);
+    if(!res.ok) throw new Error('Erro HTTP');
     const data = await res.json();
     const items = Array.isArray(data) ? data : data.items;
-    if(!Array.isArray(items) || items.length === 0) throw new Error('menu.json vazio');
-
-    MENU = items
-      .filter(x => x && x.id && x.name && x.cat)
-      .map(x => ({
-        id: String(x.id),
-        name: String(x.name),
-        cat: String(x.cat),
-        price: Number(x.price || 0),
-        img: x.img ? String(x.img) : 'assets/img/hero-ohana.jpg',
-        desc: x.desc ? String(x.desc) : '',
-        active: (x.active !== false)
-      }));
-  }catch(err){
-    console.warn('Falha ao carregar data/menu.json. Usando fallback interno.', err);
-    MENU = FALLBACK_MENU.map(x => ({...x, active: (x.active !== false)}));
+    if(!items) throw new Error('JSON vazio');
+    MENU = items.map(x => ({...x, active: x.active !== false}));
+  }catch(e){
+    console.warn('Usando menu fallback', e);
+    MENU = FALLBACK_MENU;
   }
 }
 
@@ -126,9 +65,12 @@ const els = {
   chips: document.getElementById('chips'),
   grid: document.getElementById('menuGrid'),
   empty: document.getElementById('emptyState'),
-
-  search: document.getElementById('searchInput'),
-  clearSearch: document.getElementById('clearSearch'),
+  
+  searchTrigger: document.getElementById('toggleSearchBtn'),
+  favTrigger: document.getElementById('toggleFavsBtn'), 
+  searchBar: document.getElementById('searchBar'),
+  searchInput: document.getElementById('searchInput'),
+  searchClose: document.getElementById('closeSearchBtn'),
 
   cartCount: document.getElementById('cartCount'),
   openCart: document.getElementById('openCartBtn'),
@@ -142,373 +84,358 @@ const els = {
   checkout: document.getElementById('checkoutBtn'),
   clearCart: document.getElementById('clearCartBtn'),
   obs: document.getElementById('obsInput'),
-
   year: document.getElementById('year'),
-  goToMenu: document.getElementById('goToMenuBtn'),
-
-  openQr: document.getElementById('openQrBtn'),
-  qrModal: document.getElementById('qrModal'),
-  closeQr: document.getElementById('closeQrBtn'),
-  qrBox: document.getElementById('qrBox'),
-  qrUrl: document.getElementById('qrUrl'),
-  regenQr: document.getElementById('regenQrBtn'),
-
-  installBtn: document.getElementById('installBtn')
+  openStatus: document.getElementById('openStatus'),
 };
 
-const LS = {
-  favs: 'ohana_favs_v1',
-  cart: 'ohana_cart_v1',
-  qrurl: 'ohana_qrurl_v1'
-};
-
+const LS = { favs: 'ohana_favs_v2', cart: 'ohana_cart_v2', notes: 'ohana_notes_v2' };
 const state = {
-  query: '',
   cat: 'all',
+  query: '', 
   favs: new Set(JSON.parse(localStorage.getItem(LS.favs) || '[]')),
-  cart: JSON.parse(localStorage.getItem(LS.cart) || '{}') // {id: qty}
+  cart: JSON.parse(localStorage.getItem(LS.cart) || '{}'),
+  notes: JSON.parse(localStorage.getItem(LS.notes) || '{}') // Armazena observações por ID { 'id-item': 'texto' }
 };
 
 function save(){
   localStorage.setItem(LS.favs, JSON.stringify([...state.favs]));
   localStorage.setItem(LS.cart, JSON.stringify(state.cart));
-}
-
-function escapeHtml(str){
-  return String(str)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
+  localStorage.setItem(LS.notes, JSON.stringify(state.notes));
 }
 
 function buildChips(){
+  if(!els.chips) return;
   els.chips.innerHTML = '';
-  els.chips.appendChild(makeChip('all','Todos', true));
-  for(const c of CATS){
-    els.chips.appendChild(makeChip(c.id, c.name));
+  const allBtn = document.createElement('button');
+  allBtn.className = 'chip';
+  allBtn.textContent = 'Todos';
+  allBtn.dataset.id = 'all';
+  allBtn.setAttribute('aria-pressed', 'true');
+  allBtn.onclick = () => filterCat('all');
+  els.chips.appendChild(allBtn);
+
+  CATS.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.textContent = c.name;
+    btn.dataset.id = c.id;
+    btn.onclick = () => filterCat(c.id);
+    els.chips.appendChild(btn);
+  });
+}
+
+function filterCat(id){
+  state.cat = id;
+  [...els.chips.children].forEach(c => 
+    c.setAttribute('aria-pressed', c.dataset.id === id)
+  );
+  
+  if(id !== 'favs' && els.favTrigger) els.favTrigger.classList.remove('active');
+
+  const offset = 80;
+  if (els.grid) {
+    const gridPos = els.grid.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({top: gridPos, behavior: 'smooth'});
+  }
+  
+  render();
+}
+
+function toggleFavsMode(){
+  if(els.searchBar && els.searchBar.classList.contains('visible')){
+    toggleSearch(false);
+  } else if(state.query){
+    state.query = '';
+    if(els.searchInput) els.searchInput.value = '';
+  }
+
+  if(state.cat === 'favs'){
+    filterCat('all');
+  } else {
+    state.cat = 'favs';
+    [...els.chips.children].forEach(c => c.setAttribute('aria-pressed', 'false'));
+    els.favTrigger.classList.add('active');
+    render();
   }
 }
 
-function makeChip(id, label, pressed=false){
-  const b = document.createElement('button');
-  b.className = 'chip';
-  b.type = 'button';
-  b.dataset.id = id;
-  b.textContent = label;
-  b.setAttribute('aria-pressed', String(pressed));
-  b.addEventListener('click', () => {
-    state.cat = id;
-    [...els.chips.querySelectorAll('.chip')].forEach(x => x.setAttribute('aria-pressed', String(x.dataset.id === id)));
-    render();
-  });
-  return b;
-}
-
-function filtered(){
-  const q = state.query.trim().toLowerCase();
-  return MENU.filter(it => {
-    if(it.active === false) return false;
-    const okCat = state.cat === 'all' ? true : it.cat === state.cat;
-    if(!okCat) return false;
-    if(!q) return true;
-    const hay = `${it.name} ${it.desc}`.toLowerCase();
-    return hay.includes(q);
+function getFiltered(){
+  const q = state.query.toLowerCase().trim();
+  return MENU.filter(i => {
+    if(!i.active) return false;
+    if(q) {
+      const hay = `${i.name} ${i.desc}`.toLowerCase();
+      return hay.includes(q);
+    }
+    if(state.cat === 'favs') return state.favs.has(i.id);
+    if(state.cat !== 'all' && i.cat !== state.cat) return false;
+    return true;
   });
 }
 
 function render(){
-  const items = filtered();
-  els.grid.innerHTML = '';
-
+  const items = getFiltered();
+  if(els.grid) els.grid.innerHTML = '';
+  
   if(items.length === 0){
-    els.empty.hidden = false;
-    return;
-  }
-  els.empty.hidden = true;
-
-  const byCat = new Map();
-  for(const it of items){
-    if(!byCat.has(it.cat)) byCat.set(it.cat, []);
-    byCat.get(it.cat).push(it);
-  }
-
-  const order = (state.cat === 'all') ? CATS.map(c=>c.id) : [state.cat];
-
-  for(const catId of order){
-    const group = byCat.get(catId);
-    if(!group || group.length === 0) continue;
-
-    const title = document.createElement('div');
-    title.className = 'sectionTitle';
-    title.textContent = CATS.find(c=>c.id===catId)?.name || 'Categoria';
-    els.grid.appendChild(title);
-
-    for(const it of group){
-      els.grid.appendChild(renderCard(it));
+    if(els.empty) {
+      els.empty.hidden = false;
+      const title = els.empty.querySelector('h3');
+      const desc = els.empty.querySelector('p');
+      if(state.cat === 'favs'){
+        title.textContent = "Sem favoritos ainda";
+        desc.textContent = "Marque pratos com o coração para vê-los aqui.";
+      } else {
+        title.textContent = "Nenhum prato encontrado";
+        desc.textContent = "Tente outro termo na busca.";
+      }
     }
-  }
-}
-
-function renderCard(it){
-  const card = document.createElement('article');
-  card.className = 'card';
-  const catName = CATS.find(c=>c.id===it.cat)?.name || 'Item';
-  const fav = state.favs.has(it.id);
-
-  card.innerHTML = `
-    <div class="card__media">
-      <img loading="lazy" src="${it.img}" alt="${escapeHtml(it.name)}"
-           onerror="this.src='assets/img/hero-ohana.jpg'" />
-      <div class="card__badge">${escapeHtml(catName)}</div>
-      <button class="card__fav" type="button" aria-label="Favoritar">${fav ? '❤️' : '🤍'}</button>
-    </div>
-    <div class="card__body">
-      <div class="card__title">${escapeHtml(it.name)}</div>
-      ${it.desc ? `<div class="card__desc">${escapeHtml(it.desc)}</div>` : ''}
-      <div class="card__row">
-        <div class="price">${BRL.format(it.price)}</div>
-        <button class="btn btn--primary" type="button">Adicionar</button>
-      </div>
-    </div>
-  `;
-
-  const favBtn = card.querySelector('.card__fav');
-  favBtn.addEventListener('click', () => {
-    if(state.favs.has(it.id)) state.favs.delete(it.id);
-    else state.favs.add(it.id);
-    save();
-    favBtn.textContent = state.favs.has(it.id) ? '❤️' : '🤍';
-  });
-
-  const addBtn = card.querySelector('.btn--primary');
-  addBtn.addEventListener('click', () => {
-    add(it.id);
-    addBtn.classList.remove('pop');
-    void addBtn.offsetWidth;
-    addBtn.classList.add('pop');
-  });
-
-  return card;
-}
-
-// ---------------- CART ----------------
-
-function add(id){
-  state.cart[id] = (state.cart[id] || 0) + 1;
-  save();
-  updateCart();
-}
-function dec(id){
-  if(!state.cart[id]) return;
-  state.cart[id] -= 1;
-  if(state.cart[id] <= 0) delete state.cart[id];
-  save();
-  updateCart();
-}
-function removeItem(id){
-  delete state.cart[id];
-  save();
-  updateCart();
-}
-function clearCart(){
-  state.cart = {};
-  save();
-  updateCart();
-}
-
-function cartEntries(){
-  return Object.entries(state.cart)
-    .map(([id, qty]) => ({ item: MENU.find(x=>x.id===id), qty }))
-    .filter(x => !!x.item);
-}
-
-function updateCart(){
-  const entries = cartEntries();
-  const count = entries.reduce((s,x)=> s + x.qty, 0);
-  els.cartCount.textContent = String(count);
-  els.drawerSub.textContent = `${count} item${count===1?'':'s'}`;
-
-  const subtotal = entries.reduce((s,x)=> s + x.item.price * x.qty, 0);
-  els.subtotal.textContent = BRL.format(subtotal);
-  els.total.textContent = BRL.format(subtotal);
-
-  els.cartList.innerHTML = '';
-  if(entries.length === 0){
-    els.cartList.innerHTML = `<div class="empty"><div class="empty__emoji">🛒</div><div class="empty__title">Sacola vazia</div><div class="empty__desc">Adicione itens do cardápio para montar seu pedido.</div></div>`;
     return;
   }
+  if(els.empty) els.empty.hidden = true;
 
-  const frag = document.createDocumentFragment();
-  for(const {item, qty} of entries){
-    const row = document.createElement('div');
-    row.className = 'cartItem';
-    row.innerHTML = `
-      <div>
-        <div class="cartItem__title">${escapeHtml(item.name)}</div>
-        <div class="cartItem__meta">${BRL.format(item.price)} • ${escapeHtml(CATS.find(c=>c.id===item.cat)?.name || '')}</div>
-      </div>
-      <div class="cartItem__right">
-        <div class="qty">
-          <button type="button" aria-label="Diminuir">−</button>
-          <div class="n">${qty}</div>
-          <button type="button" aria-label="Aumentar">+</button>
+  const groups = {};
+  items.forEach(i => {
+    if(!groups[i.cat]) groups[i.cat] = [];
+    groups[i.cat].push(i);
+  });
+
+  const catsOrder = (state.query || state.cat === 'favs') ? Object.keys(groups) : CATS.map(c=>c.id);
+
+  catsOrder.forEach(catId => {
+    if(!groups[catId]) return;
+    
+    const title = document.createElement('h3');
+    title.className = 'sectionTitle';
+    title.textContent = CATS.find(c=>c.id===catId)?.name || 'Outros';
+    if(els.grid) els.grid.appendChild(title);
+
+    groups[catId].forEach(item => {
+      const el = document.createElement('article');
+      el.className = 'card';
+      const isFav = state.favs.has(item.id);
+      
+      el.innerHTML = `
+        <div class="card__media">
+          <img src="${item.img}" alt="${item.name}" loading="lazy" onerror="this.src='assets/img/hero-ohana.jpg'">
+          <button class="card__fav" aria-label="Favoritar">${isFav ? '❤️' : '♡'}</button>
         </div>
-        <button class="removeBtn" type="button">Remover</button>
-      </div>
-    `;
-
-    const [minus, plus] = row.querySelectorAll('.qty button');
-    minus.addEventListener('click', () => dec(item.id));
-    plus.addEventListener('click', () => add(item.id));
-    row.querySelector('.removeBtn').addEventListener('click', () => removeItem(item.id));
-
-    frag.appendChild(row);
-  }
-  els.cartList.appendChild(frag);
-}
-
-function openDrawer(){
-  els.overlay.hidden = false;
-  els.drawer.classList.add('is-open');
-  els.drawer.setAttribute('aria-hidden','false');
-}
-function closeDrawer(){
-  els.overlay.hidden = true;
-  els.drawer.classList.remove('is-open');
-  els.drawer.setAttribute('aria-hidden','true');
-}
-
-// ---------------- WhatsApp ----------------
-
-function sendWhatsApp(){
-  const entries = cartEntries();
-  if(entries.length === 0){
-    alert('Adicione itens ao pedido.');
-    return;
-  }
-
-  if(!CONFIG.whatsapp || CONFIG.whatsapp.includes('SEUNUMEROAQUI')){
-    alert('Configure o número em CONFIG.whatsapp no app.js (ex: 5511999999999).');
-    return;
-  }
-
-  const lines = [];
-  lines.push(`*Pedido - ${CONFIG.businessName}*`);
-  lines.push('');
-
-  let total = 0;
-  for(const {item, qty} of entries){
-    const val = item.price * qty;
-    total += val;
-    lines.push(`• ${qty}x ${item.name} — ${BRL.format(val)}`);
-  }
-
-  const obs = (els.obs.value || '').trim();
-  if(obs){
-    lines.push('');
-    lines.push(`*Observações:* ${obs}`);
-  }
-
-  lines.push('');
-  lines.push(`*Total: ${BRL.format(total)}*`);
-
-  const msg = encodeURIComponent(lines.join('\n'));
-  window.open(`https://wa.me/${CONFIG.whatsapp}?text=${msg}`, '_blank');
-}
-
-// ---------------- QR Code ----------------
-
-function closeQr(){
-  els.qrModal.hidden = true;
-}
-
-function generateQr(url){
-  els.qrBox.innerHTML = '';
-  const safe = (url || '').trim();
-  if(!safe){
-    els.qrBox.innerHTML = '<div style="color:#1C2A22; font-weight:900; text-align:center">Cole a URL publicada do cardápio para gerar o QR.</div>';
-    return;
-  }
-
-  localStorage.setItem(LS.qrurl, safe);
-
-  qr = new QRCode(els.qrBox, {
-    text: safe,
-    width: 220,
-    height: 220,
-    correctLevel: QRCode.CorrectLevel.M
+        <div class="card__body">
+          <div class="card__title">${item.name}</div>
+          <div class="card__desc">${item.desc}</div>
+          <div class="card__footer">
+            <div class="price">${BRL.format(item.price)}</div>
+            <button class="btn--add">+</button>
+          </div>
+        </div>
+      `;
+      
+      el.querySelector('.card__fav').onclick = (e) => {
+        e.stopPropagation();
+        toggleFav(item.id);
+        render(); 
+      };
+      
+      el.querySelector('.btn--add').onclick = () => {
+        addToCart(item.id);
+      };
+      
+      if(els.grid) els.grid.appendChild(el);
+    });
   });
 }
 
-// ---------------- PWA install prompt ----------------
-
-let deferredPrompt = null;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  els.installBtn.hidden = false;
-});
-
-async function installPWA(){
-  if(!deferredPrompt) return;
-  deferredPrompt.prompt();
-  await deferredPrompt.userChoice;
-  deferredPrompt = null;
-  els.installBtn.hidden = true;
+function toggleFav(id){
+  if(state.favs.has(id)) state.favs.delete(id);
+  else state.favs.add(id);
+  save();
 }
 
-// ---------------- Events ----------------
-
-async function boot(){
-  els.year.textContent = new Date().getFullYear();
-
-  buildChips();
-
-  els.search.addEventListener('input', () => {
-    state.query = els.search.value;
-    render();
-  });
-
-  els.clearSearch.addEventListener('click', () => {
-    els.search.value = '';
+function toggleSearch(show){
+  if(show){
+    els.searchTrigger.style.display = 'none';
+    els.chips.classList.add('hidden');
+    els.searchBar.classList.add('visible');
+    els.searchInput.focus();
+  } else {
+    els.searchBar.classList.remove('visible');
+    els.chips.classList.remove('hidden');
+    els.searchTrigger.style.display = 'flex';
+    els.searchInput.value = '';
     state.query = '';
     render();
-    els.search.focus();
-  });
-
-  els.openCart.addEventListener('click', openDrawer);
-  els.closeCart.addEventListener('click', closeDrawer);
-
-  els.overlay.addEventListener('click', () => {
-    closeDrawer();
-    
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if(e.key === 'Escape'){
-      closeDrawer();
-      
-    }
-  });
-
-  els.checkout.addEventListener('click', sendWhatsApp);
-
-  els.clearCart.addEventListener('click', () => {
-    if(confirm('Limpar a sacola?')) clearCart();
-  });
-
-  els.goToMenu.addEventListener('click', () => {
-    window.scrollTo({ top: els.grid.offsetTop - 120, behavior: 'smooth' });
-  });
-
-      
-  els.installBtn.addEventListener('click', installPWA);
-
-  await loadMenu();
-  render();
-  updateCart();
+  }
 }
 
-boot();
+function addToCart(id){
+  state.cart[id] = (state.cart[id] || 0) + 1;
+  save(); updateCartUI();
+}
+function removeOne(id){
+  if(state.cart[id] > 0) state.cart[id]--;
+  if(state.cart[id] === 0) {
+    delete state.cart[id];
+    delete state.notes[id]; // Limpa nota se remover item
+  }
+  save(); updateCartUI();
+}
+function removeAll(id){
+  delete state.cart[id];
+  delete state.notes[id]; // Limpa nota se remover item
+  save(); updateCartUI();
+}
+
+function updateCartUI(){
+  const entries = Object.entries(state.cart).map(([id, qty]) => {
+    const item = MENU.find(x=>x.id===id);
+    return item ? {item, qty} : null;
+  }).filter(Boolean);
+
+  const totalQty = entries.reduce((a,b)=>a+b.qty, 0);
+  const totalVal = entries.reduce((a,b)=>a+(b.item.price * b.qty), 0);
+
+  if(els.cartCount) {
+    els.cartCount.textContent = totalQty;
+    els.cartCount.style.display = totalQty > 0 ? 'flex' : 'none';
+  }
+  
+  if(els.drawerSub) els.drawerSub.textContent = `${totalQty} item(ns)`;
+  if(els.subtotal) els.subtotal.textContent = BRL.format(totalVal);
+  if(els.total) els.total.textContent = BRL.format(totalVal);
+
+  if(els.cartList) {
+    els.cartList.innerHTML = '';
+    entries.forEach(({item, qty}) => {
+      const div = document.createElement('div');
+      div.className = 'cart-item';
+      
+      // Recupera nota salva ou vazio
+      const itemNote = state.notes[item.id] || '';
+
+      div.innerHTML = `
+        <div class="cart-item__info">
+          <div class="cart-item__name">${item.name}</div>
+          <div class="cart-item__price">${BRL.format(item.price)}</div>
+          
+          <!-- CAMPO DE OBSERVAÇÃO INDIVIDUAL -->
+          <input type="text" class="cart-item__note" placeholder="Alguma observação neste item?" value="${itemNote}">
+          
+          <div class="cart-controls">
+            <button class="cart-btn minus">-</button>
+            <span class="cart-qty">${qty}</span>
+            <button class="cart-btn plus">+</button>
+          </div>
+        </div>
+        <button class="cart-remove">remover</button>
+      `;
+      
+      // Eventos
+      div.querySelector('.minus').onclick = () => removeOne(item.id);
+      div.querySelector('.plus').onclick = () => addToCart(item.id);
+      div.querySelector('.cart-remove').onclick = () => removeAll(item.id);
+      
+      // Salva nota ao digitar
+      div.querySelector('.cart-item__note').oninput = (e) => {
+        state.notes[item.id] = e.target.value;
+        save();
+      };
+
+      els.cartList.appendChild(div);
+    });
+  }
+}
+
+function openDrawer(){ 
+  if(els.drawer) els.drawer.classList.add('is-open'); 
+  if(els.overlay) els.overlay.hidden = false; 
+}
+function closeDrawer(){ 
+  if(els.drawer) els.drawer.classList.remove('is-open'); 
+  setTimeout(()=> { if(els.overlay) els.overlay.hidden=true; }, 300); 
+}
+
+function sendWA(){
+  const entries = Object.entries(state.cart).map(([id,q]) => ({ i: MENU.find(x=>x.id===id), q})).filter(x=>x.i);
+  if(entries.length === 0) return alert('Sua sacola está vazia.');
+
+  let text = `*${CONFIG.businessName}*\n${CONFIG.waHeader}\n\n`;
+  let total = 0;
+  
+  entries.forEach(({i, q}) => {
+    const sub = i.price * q;
+    total += sub;
+    text += `▪ ${q}x ${i.name}\n   ${BRL.format(sub)}`;
+    
+    // Adiciona nota individual se existir
+    if(state.notes[i.id] && state.notes[i.id].trim()){
+      text += `\n   _(Obs: ${state.notes[i.id]})_`;
+    }
+    text += `\n`;
+  });
+  
+  // Observação Geral
+  if(els.obs && els.obs.value.trim()){
+    text += `\n📝 *Obs Geral:* ${els.obs.value.trim()}\n`;
+  }
+  
+  text += `\n*TOTAL: ${BRL.format(total)}*`;
+  
+  window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+function checkOpenStatus() {
+  if(!els.openStatus) return;
+  
+  const now = new Date();
+  const day = now.getDay(); 
+  const minutes = now.getHours() * 60 + now.getMinutes();
+  
+  const today = CONFIG.hours[day];
+  
+  if (!today) {
+    els.openStatus.textContent = "🔴 Fechado hoje";
+    return;
+  }
+
+  const [openH, openM] = today.open.split(':').map(Number);
+  const [closeH, closeM] = today.close.split(':').map(Number);
+  const start = openH * 60 + openM;
+  const end = closeH * 60 + closeM;
+
+  if (minutes >= start && minutes < end) {
+    els.openStatus.textContent = `🟢 Aberto agora • Fecha às ${today.close}`;
+  } else if (minutes < start) {
+    els.openStatus.textContent = `🔴 Fechado • Abre às ${today.open}`;
+  } else {
+    els.openStatus.textContent = `🔴 Fechado agora`;
+  }
+}
+
+async function init(){
+  if(els.year) els.year.textContent = new Date().getFullYear();
+  await loadMenu();
+  buildChips();
+  render();
+  updateCartUI();
+  
+  if(els.openCart) els.openCart.onclick = openDrawer;
+  if(els.closeCart) els.closeCart.onclick = closeDrawer;
+  if(els.overlay) els.overlay.onclick = closeDrawer;
+  
+  if(els.checkout) els.checkout.onclick = sendWA;
+  if(els.clearCart) els.clearCart.onclick = () => { if(confirm('Esvaziar?')) { state.cart={}; state.notes={}; save(); updateCartUI(); } };
+
+  if(els.searchTrigger) els.searchTrigger.onclick = () => toggleSearch(true);
+  if(els.searchClose) els.searchClose.onclick = () => toggleSearch(false);
+  if(els.favTrigger) els.favTrigger.onclick = toggleFavsMode;
+
+  if(els.searchInput) els.searchInput.oninput = (e) => {
+    state.query = e.target.value;
+    render();
+  };
+
+  checkOpenStatus();
+  setInterval(checkOpenStatus, 60000);
+}
+
+init();

@@ -1,4 +1,4 @@
-const CACHE = 'ohana-cardapio-admin-v2';
+const CACHE = 'ohana-ifood-v6';
 
 const ASSETS = [
   './',
@@ -7,7 +7,6 @@ const ASSETS = [
   './app.js',
   './manifest.json',
   './data/menu.json',
-  './assets/js/qrcode.min.js',
   './assets/img/icon-192.png',
   './assets/img/icon-512.png',
   './assets/img/hero-ohana.jpg'

@@ -4,30 +4,168 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Admin — Ohana Cardápio</title>
+  
+  <!-- Fontes e Ícones -->
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  
   <style>
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    .bar{padding:12px 14px;background:#2E6B3E;color:#fff;font-weight:900}
-    .hint{padding:12px 14px;background:#FFF8E6;border-bottom:1px solid rgba(46,107,62,.16)}
-    .hint code{background:rgba(0,0,0,.06);padding:2px 6px;border-radius:8px}
+    :root {
+      --primary: #1A3C26;
+      --gold: #C59D5F;
+      --bg: #F9F7F2;
+      --text: #1B1B1B;
+    }
+    
+    body { margin: 0; font-family: 'DM Sans', sans-serif; background-color: var(--bg); color: var(--text); }
+    
+    /* Barra Superior Premium */
+    .admin-bar {
+      background: var(--primary);
+      color: #fff;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .admin-logo { font-weight: 700; font-size: 18px; letter-spacing: 0.05em; display: flex; align-items: center; gap: 10px; }
+    .admin-logo span { color: var(--gold); }
+
+    /* Botão Publicar */
+    .btn-publish-nav {
+      background-color: var(--gold);
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-publish-nav:hover { background-color: #d4af37; }
+    
+    /* Card de Aviso (Economia de Deploy) */
+    .deploy-tip {
+      background: #fff;
+      border-left: 4px solid var(--gold);
+      padding: 16px 24px;
+      margin: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: start;
+      gap: 16px;
+      max-width: 800px;
+    }
+    .tip-icon { font-size: 24px; }
+    .tip-content h3 { margin: 0 0 4px 0; font-size: 15px; color: var(--primary); }
+    .tip-content p { margin: 0; font-size: 13px; color: #666; line-height: 1.5; }
+    
+    /* Customização do Decap CMS */
+    [class*="nc-github-layout-root"] { margin-top: 20px; }
   </style>
+  
+  <!-- Script para prevenir erro de config automática -->
+  <script>window.CMS_MANUAL_INIT = true;</script>
 </head>
 <body>
-  <div class="bar">Ohana Snack House — Painel do Cardápio</div>
-  <div class="hint">
-    Login via <b>GitHub</b>. Se aparecer erro, confira <code>admin/config.yml</code> (repo/branch).
-  </div>
-  
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-<script src="https://unpkg.com/decap-cms@latest/dist/decap-cms.js"></script>
 
-<script>
-  if (window.netlifyIdentity) {
-    window.netlifyIdentity.on("init", (user) => {
-      if (!user) {
-        window.netlifyIdentity.on("login", () => {
-          document.location.href = "/admin/";
-        });
-      }
-    });
-  }
-</script>
+  <div class="admin-bar">
+    <div class="admin-logo"><span>Ohana</span> Painel Administrativo</div>
+    <a href="publish.html" class="btn-publish-nav">🚀 Publicar Alterações</a>
+  </div>
+
+  <div class="deploy-tip">
+    <div class="tip-icon">💡</div>
+    <div class="tip-content">
+      <h3>Modo Economia Ativado</h3>
+      <p>
+        Suas edições agora são salvas, mas <b>não vão para o ar automaticamente</b> (para economizar minutos do Netlify).<br>
+        Quando terminar de editar tudo, clique no botão <b>"Publicar Alterações"</b> lá em cima.
+      </p>
+    </div>
+  </div>
+
+  <!-- Carrega Decap CMS -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
+
+  <!-- Configuração Injetada (Igual ao seu config.yml, mas via JS para evitar erros) -->
+  <script>
+    const config = {
+      backend: {
+        name: 'git-gateway',
+        branch: 'main',
+        commit_messages: {
+          create: 'Create {{collection}} “{{slug}}” [skip netlify]',
+          update: 'Update {{collection}} “{{slug}}” [skip netlify]',
+          delete: 'Delete {{collection}} “{{slug}}” [skip netlify]',
+          uploadMedia: 'Upload “{{path}}” [skip netlify]',
+          deleteMedia: 'Delete “{{path}}” [skip netlify]',
+          openAuthoring: '{{message}} [skip netlify]'
+        }
+      },
+      locale: 'pt',
+      media_folder: "assets/img/uploads",
+      public_folder: "/assets/img/uploads",
+      publish_mode: "simple",
+      collections: [
+        {
+          name: "cardapio",
+          label: "Gerenciar Cardápio",
+          label_singular: "Arquivo do Menu",
+          files: [
+            {
+              name: "menu",
+              label: "Editar Pratos e Categorias",
+              file: "data/menu.json",
+              description: "Clique aqui para editar todos os itens do cardápio",
+              format: "json",
+              fields: [
+                {
+                  label: "Lista de Produtos",
+                  name: "items",
+                  widget: "list",
+                  summary: "{{fields.name}} — R$ {{fields.price}}",
+                  minimize_collapsed: true,
+                  fields: [
+                    { label: "ID (Sistema)", name: "id", widget: "string", hint: "Use códigos únicos ex: ex-picanha" },
+                    { label: "Disponível?", name: "active", widget: "boolean", default: true },
+                    { 
+                      label: "Categoria", 
+                      name: "cat", 
+                      widget: "select", 
+                      options: [
+                        { label: "Executivos", value: "executivos" },
+                        { label: "Especiais Mineiros", value: "mineira" },
+                        { label: "Parmegianas", value: "parmegiana" },
+                        { label: "À La Carte", value: "alacarte" },
+                        { label: "Sucos", value: "sucos" },
+                        { label: "Refrigerantes", value: "refri" },
+                        { label: "Cervejas", value: "cervejas" },
+                        { label: "Sobremesas", value: "sobremesas" }
+                      ] 
+                    },
+                    { label: "Nome do Prato", name: "name", widget: "string" },
+                    { label: "Descrição", name: "desc", widget: "text", required: false },
+                    { label: "Preço (R$)", name: "price", widget: "number", value_type: "float", min: 0 },
+                    { label: "Foto", name: "img", widget: "image", required: false }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    CMS.init({ config });
+  </script>
+</body>
+</html>

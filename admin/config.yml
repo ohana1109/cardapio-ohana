@@ -1,7 +1,14 @@
 backend:
   name: git-gateway
-  repo: ohana1109/cardapio-ohana        # ex: jonybether/ohana-cardapio
-  branch: main                     # ou master
+  branch: main
+  # Adiciona mensagens de commit com [skip netlify] para evitar deploy automático
+  commit_messages:
+    create: 'Create {{collection}} “{{slug}}” [skip netlify]'
+    update: 'Update {{collection}} “{{slug}}” [skip netlify]'
+    delete: 'Delete {{collection}} “{{slug}}” [skip netlify]'
+    uploadMedia: 'Upload “{{path}}” [skip netlify]'
+    deleteMedia: 'Delete “{{path}}” [skip netlify]'
+    openAuthoring: '{{message}} [skip netlify]'
 
 media_folder: "assets/img/uploads"
 public_folder: "/assets/img/uploads"

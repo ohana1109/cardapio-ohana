@@ -2,128 +2,132 @@
 <html lang="pt-br">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#2E6B3E" />
-  <title>Ohana Snack House — Cardápio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="theme-color" content="#1A3C26" />
+  <title>Ohana Snack House — Menu</title>
 
   <link rel="manifest" href="manifest.json" />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@400;500;700&family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap" rel="stylesheet">
+  
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <header class="topbar">
-    <div class="topbar__inner">
-      <div class="brand">
-        <img class="brand__logo" src="assets/img/icon-192.png" alt="Ohana" onerror="this.style.display='none'" />
-        <div class="brand__mark" aria-hidden="true"></div>
-        <div class="brand__text">
-          <div class="brand__name">Ohana Snack House</div>
-          <div class="brand__sub">Cardápio Digital</div>
-        </div>
+  <!-- Topbar -->
+  <header class="topbar" id="topbar">
+    <div class="brand">
+      <div class="brand__logo-wrapper">
+        <img class="brand__logo" src="assets/img/logo-ohana.jpg" alt="Ohana" onerror="this.style.display='none'" />
       </div>
-
-      <div class="topbar__actions">
-        
-
-        <button class="btn btn--ghost" id="openCartBtn" type="button" aria-label="Abrir sacola">
-          <span class="icon">🛍️</span>
-          <span class="pill" id="cartCount">0</span>
-        </button>
+      <div class="brand__text">
+        <div class="brand__name">Ohana Snack House</div>
+        <div class="brand__sub">Gastronomia & Conforto</div>
       </div>
-    </div>
-
-    <div class="toolbar">
-      <div class="search">
-        <span class="search__icon" aria-hidden="true">🔎</span>
-        <input id="searchInput" type="search" placeholder="Buscar prato, ingrediente…" autocomplete="off" />
-        <button class="search__clear" id="clearSearch" type="button" title="Limpar">✕</button>
-      </div>
-
-      <div class="chips" id="chips"></div>
     </div>
   </header>
 
   <main class="container">
-    <section class="hero">
-      <div class="hero__grid">
-        <div class="hero__card">
-          <div class="hero__title">Peça rápido pelo WhatsApp</div>
-          <div class="hero__desc">Escolha seus itens, coloque observações e envie o pedido com 1 toque.</div>
-          <div class="hero__meta">🍽️ Executivos/Mineiros/Parmegianas: serve 1 pessoa • 👥 À la carte: serve 2 pessoas</div>
-
-          <div class="hero__cta">
-            <button class="btn btn--primary" id="goToMenuBtn" type="button">Ver cardápio</button>
-            <button class="btn btn--ghost" id="installBtn" type="button" hidden>Instalar</button>
-          </div>
-        </div>
-
-        <div class="hero__image" role="img" aria-label="Foto de comida">
-          <img src="assets/img/hero-ohana.jpg" alt="Ohana" loading="lazy" onerror="this.closest('.hero__image').classList.add('is-fallback')" />
-          <div class="hero__imageFallback">
-            <div class="hero__imageFallbackTitle">🍽️</div>
-            <div class="hero__imageFallbackSub">Ohana</div>
-          </div>
+    <!-- Hero Section -->
+    <section class="hero-immersive">
+      <div class="hero__bg">
+        <img src="assets/img/hero-ohana.png" alt="Destaque Ohana" loading="lazy" />
+      </div>
+      
+      <div class="hero__content-overlay">
+        <div class="hero__badge" id="openStatus">Aberto todos os dias • 11:00 às 15:00</div>
+        
+        <h1 class="hero__title">Sabores que <br>abraçam.</h1>
+        <p class="hero__desc">Peça seus favoritos diretamente pelo WhatsApp.</p>
+        
+        <div class="hero__divider"></div>
+        
+        <div class="hero__address-box">
+          <div class="hero__address">Rua Rio Grande do Sul, 1097 — Centro<br>Poços de Caldas, MG</div>
+          <div class="hero__hours">Todos os dias • 11:00 às 15:00</div>
         </div>
       </div>
     </section>
 
-    <section class="grid" id="menuGrid" aria-live="polite"></section>
+    <!-- Barra de Categorias + Busca + Favoritos -->
+    <div class="sticky-nav-container">
+      <!-- Botão Lupa (Esquerda) -->
+      <button class="nav-icon-btn" id="toggleSearchBtn" aria-label="Buscar">🔎</button>
+      
+      <!-- Input de Busca -->
+      <div class="search-bar" id="searchBar">
+        <input type="text" id="searchInput" placeholder="O que você procura hoje?" autocomplete="off">
+        <button class="search-close" id="closeSearchBtn">✕</button>
+      </div>
 
-    <section class="empty" id="emptyState" hidden>
-      <div class="empty__emoji">😕</div>
-      <div class="empty__title">Nada por aqui</div>
-      <div class="empty__desc">Tente outro termo de busca ou escolha outra categoria.</div>
+      <!-- Lista de Categorias (Centro) -->
+      <nav class="nav-scroll" id="chips"></nav>
+
+      <!-- Botão Favoritos (Direita) -->
+      <button class="nav-icon-btn" id="toggleFavsBtn" aria-label="Ver Favoritos">❤️</button>
+    </div>
+
+    <section class="menu-grid" id="menuGrid" aria-live="polite"></section>
+
+    <section class="empty-state" id="emptyState" hidden>
+      <div class="empty__icon">🍂</div>
+      <h3>Nenhum prato encontrado</h3>
+      <p>Tente outro termo ou verifique seus favoritos.</p>
     </section>
   </main>
+
+  <!-- Botão Flutuante (FAB) -->
+  <button class="fab-cart" id="openCartBtn" aria-label="Abrir sacola">
+    <span class="fab-cart__icon">🛍️</span>
+    <span class="fab-cart__count" id="cartCount">0</span>
+  </button>
 
   <!-- Drawer: Sacola -->
   <div class="overlay" id="overlay" hidden></div>
 
   <aside class="drawer" id="drawer" aria-hidden="true">
-    <div class="drawer__head">
-      <div>
-        <div class="drawer__title">Seu pedido</div>
-        <div class="drawer__sub" id="drawerSub">0 itens</div>
-      </div>
-      <button class="btn btn--ghost" id="closeCartBtn" type="button" aria-label="Fechar">✕</button>
+    <div class="drawer__header">
+      <h2 class="drawer__title">Sua Seleção</h2>
+      <button class="close-btn" id="closeCartBtn" type="button">✕</button>
     </div>
 
     <div class="drawer__body">
-      <div id="cartList" class="cartList"></div>
+      <div class="drawer__status" id="drawerSub">0 itens</div>
+      <div id="cartList" class="cart-list"></div>
 
-      <div class="obs">
-        <label for="obsInput" class="obs__label">Observação (opcional)</label>
-        <textarea id="obsInput" class="obs__input" rows="3" placeholder="Ex.: sem cebola, ponto da carne, trocar fritas por mandioca…"></textarea>
-        <div class="obs__hint">Vai junto na mensagem do WhatsApp.</div>
+      <div class="obs-section">
+        <label for="obsInput">Observações do Chef</label>
+        <textarea id="obsInput" rows="3" placeholder="Ponto da carne, retirar ingredientes, etc..."></textarea>
       </div>
     </div>
 
-    <div class="drawer__foot">
-      <div class="totals">
-        <div class="totals__row"><span>Subtotal</span><strong id="subtotal">R$ 0,00</strong></div>
-        <div class="totals__row totals__row--big"><span>Total</span><strong id="total">R$ 0,00</strong></div>
+    <div class="drawer__footer">
+      <div class="bill">
+        <div class="bill__row"><span>Subtotal</span><span id="subtotal">R$ 0,00</span></div>
+        <div class="bill__row bill__total"><span>Total</span><strong id="total">R$ 0,00</strong></div>
       </div>
 
-      <button class="btn btn--primary" id="checkoutBtn" type="button">Enviar no WhatsApp</button>
-      <button class="btn btn--ghost" id="clearCartBtn" type="button">Limpar sacola</button>
-
-      <div class="hint">Você será redirecionado para o WhatsApp com o pedido pronto.</div>
+      <button class="btn btn--gold btn--full" id="checkoutBtn" type="button">
+        <span>Enviar Pedido (WhatsApp)</span>
+        <span class="btn-arrow">→</span>
+      </button>
+      
+      <button class="btn-link" id="clearCartBtn" type="button">Esvaziar sacola</button>
     </div>
   </aside>
 
   <footer class="footer">
-    <div class="footer__inner">
-      <span>© <span id="year"></span> Ohana Snack House</span>
-      <span class="sep">•</span>
-      <span class="mini">Feito para pedido via WhatsApp</span>
+    <div class="footer__content">
+      <p>© <span id="year"></span> <strong>Ohana Snack House</strong>. Todos os direitos reservados.</p>
     </div>
   </footer>
 
-  
   <script src="app.js"></script>
   <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
+    if ('serviceWorker' in navigator && (window.location.protocol === 'http:' || window.location.protocol === 'https:')) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(e => console.log('SW ignorado em dev')));
     }
   </script>
 </body>
