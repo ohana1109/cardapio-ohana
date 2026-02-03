@@ -3,174 +3,54 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Publicar Alterações — Ohana</title>
-  
+  <title>Publicar — Ohana</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-  
   <style>
-    :root {
-      --primary: #1A3C26;
-      --gold: #C59D5F;
-      --bg: #F9F7F2;
-      --text: #1B1B1B;
-      --danger: #d32f2f;
-      --success: #2e7d32;
-    }
-    
-    body { 
-      margin: 0; 
-      font-family: 'DM Sans', sans-serif; 
-      background-color: var(--bg); 
-      color: var(--text); 
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-
-    .publish-card {
-      background: #fff;
-      padding: 40px;
-      border-radius: 16px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-      text-align: center;
-      max-width: 400px;
-      width: 90%;
-      border: 1px solid rgba(0,0,0,0.05);
-    }
-
-    .icon { font-size: 48px; margin-bottom: 20px; display: block; }
-    
-    h1 { margin: 0 0 10px 0; color: var(--primary); font-size: 24px; }
-    p { color: #666; font-size: 14px; line-height: 1.5; margin-bottom: 30px; }
-
-    .btn-publish {
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      padding: 16px 32px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      width: 100%;
-      transition: background 0.2s, transform 0.1s;
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-    }
-    .btn-publish:hover { background: #14301e; }
-    .btn-publish:active { transform: scale(0.98); }
-    .btn-publish:disabled { opacity: 0.7; cursor: not-allowed; }
-
-    .btn-back {
-      margin-top: 16px;
-      background: transparent;
-      border: none;
-      color: #888;
-      text-decoration: underline;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    /* Status Styles */
-    .status { margin-top: 20px; font-weight: 500; font-size: 14px; display: none; }
-    .status.success { color: var(--success); display: block; }
-    .status.error { color: var(--danger); display: block; }
-    
-    /* Loader */
-    .spinner {
-      width: 18px; height: 18px;
-      border: 2px solid #fff;
-      border-top-color: transparent;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      display: none;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
+    body { margin: 0; font-family: 'DM Sans', sans-serif; background: #F9F7F2; color: #1B1B1B; display: flex; align-items: center; justify-content: center; height: 100vh; }
+    .card { background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 90%; }
+    h1 { margin-top: 0; color: #1A3C26; }
+    p { color: #666; font-size: 14px; margin-bottom: 30px; }
+    .btn { background: #1A3C26; color: #fff; border: none; padding: 16px; border-radius: 8px; width: 100%; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    .btn:hover { background: #2E5239; }
+    .btn:disabled { opacity: 0.7; cursor: wait; }
+    .status { margin-top: 20px; font-weight: bold; min-height: 20px; }
+    .status.success { color: #2e7d32; }
+    .status.error { color: #d32f2f; }
+    .back { display: block; margin-top: 20px; color: #888; text-decoration: none; font-size: 13px; }
+    .back:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
-
-  <div class="publish-card">
-    <span class="icon">🚀</span>
-    <h1>Publicar Alterações</h1>
-    <p>
-      Você fez edições no cardápio? Clique abaixo para enviar tudo para o site oficial de uma vez.
-    </p>
-
-    <button id="publishBtn" class="btn-publish">
-      <span class="spinner" id="spinner"></span>
-      <span id="btnText">PUBLICAR AGORA</span>
-    </button>
-
-    <div id="statusMsg" class="status"></div>
-
-    <button onclick="checkExit()" class="btn-back">Voltar ao Painel</button>
+  <div class="card">
+    <h1>Publicar Site</h1>
+    <p>Você finalizou as edições? Clique abaixo para atualizar o site oficial.</p>
+    <button id="btn" class="btn">PUBLICAR AGORA</button>
+    <div id="status" class="status"></div>
+    <a href="index.html" class="back" onclick="return checkExit()">Voltar ao Painel</a>
   </div>
-
   <script>
-    let isPublished = false;
-    let isPublishing = false;
-
-    // Proteção ao sair da página se não tiver publicado (assumindo que entrou aqui para publicar)
-    window.addEventListener('beforeunload', (e) => {
-      if (!isPublished && !isPublishing) {
-        e.preventDefault();
-        e.returnValue = ''; // Padrão moderno
-      }
-    });
-
+    let published = false;
+    const btn = document.getElementById('btn');
+    const status = document.getElementById('status');
     function checkExit() {
-      if (!isPublished) {
-        if(confirm("Tem certeza que deseja sair sem publicar as alterações? O site não será atualizado.")) {
-          window.location.href = 'index.html';
-        }
-      } else {
-        window.location.href = 'index.html';
-      }
+      if(!published && confirm("Sair sem publicar? As alterações ficarão salvas no rascunho.")) return true;
+      return published;
     }
-
-    const btn = document.getElementById('publishBtn');
-    const spinner = document.getElementById('spinner');
-    const btnText = document.getElementById('btnText');
-    const statusMsg = document.getElementById('statusMsg');
-
     btn.addEventListener('click', async () => {
-      // Estado Visual: Carregando
-      isPublishing = true;
-      btn.disabled = true;
-      btn.style.backgroundColor = '#666';
-      spinner.style.display = 'block';
-      btnText.textContent = 'INICIANDO DEPLOY...';
-      statusMsg.className = 'status';
-      statusMsg.textContent = '';
-
+      btn.disabled = true; btn.innerText = "Processando...";
       try {
-        // Chama a função serverless que protege a URL do hook
-        const response = await fetch('/.netlify/functions/publish', { method: 'POST' });
-        const data = await response.json();
-
-        if (response.ok) {
-          // Sucesso
-          isPublished = true;
-          statusMsg.textContent = "✅ Sucesso! O site será atualizado em 1-2 minutos.";
-          statusMsg.className = 'status success';
-          btnText.textContent = 'PUBLICADO';
-          btn.style.backgroundColor = 'var(--success)';
-        } else {
-          // Erro da API
-          throw new Error(data.error || 'Erro desconhecido');
-        }
-      } catch (error) {
-        // Erro
-        statusMsg.textContent = "❌ Falha: " + error.message;
-        statusMsg.className = 'status error';
-        btnText.textContent = 'TENTAR NOVAMENTE';
-        btn.disabled = false;
-        btn.style.backgroundColor = 'var(--primary)';
-      } finally {
-        isPublishing = false;
-        spinner.style.display = 'none';
+        const res = await fetch('/.netlify/functions/publish', { method: 'POST' });
+        const data = await res.json();
+        if (res.ok) {
+          published = true;
+          status.innerText = "✅ Sucesso! Site atualizando em ~2 min.";
+          status.className = 'status success';
+          btn.innerText = "PUBLICADO";
+        } else { throw new Error(data.error); }
+      } catch (err) {
+        status.innerText = "❌ Erro: " + err.message;
+        status.className = 'status error';
+        btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE";
       }
     });
   </script>

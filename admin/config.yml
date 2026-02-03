@@ -1,7 +1,7 @@
 backend:
   name: git-gateway
   branch: main
-  # Adiciona mensagens de commit com [skip netlify] para evitar deploy automático
+  # Configuração CRÍTICA para evitar deploys automáticos a cada salvamento
   commit_messages:
     create: 'Create {{collection}} “{{slug}}” [skip netlify]'
     update: 'Update {{collection}} “{{slug}}” [skip netlify]'
@@ -30,9 +30,10 @@ collections:
             summary: "{{fields.name}} — R$ {{fields.price}}"
             fields:
               - { label: "ID (único)", name: "id", widget: "string" }
-              - { label: "Ativo (pausar/mostrar)", name: "active", widget: "boolean", default: true }
+              - { label: "Ativo", name: "active", widget: "boolean", default: true }
               - { label: "Categoria", name: "cat", widget: "select", options: ["executivos","mineira","parmegiana","alacarte","sucos","refri","cervejas","sobremesas"] }
               - { label: "Nome", name: "name", widget: "string" }
               - { label: "Descrição", name: "desc", widget: "text", required: false }
               - { label: "Preço", name: "price", widget: "number", value_type: "float", min: 0 }
               - { label: "Imagem", name: "img", widget: "image", required: false }
+
