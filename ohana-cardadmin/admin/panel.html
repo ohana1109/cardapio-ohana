@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel de Controle — Ohana</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    :root {
+      --primary-color: #1A3C26;
+      --primary-hover: #2E5239;
+      --danger-color: #c82333;
+      --light-gray: #f4f4f5;
+      --gray: #e2e2e2;
+      --dark-gray: #555;
+      --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--light-gray);
+      margin: 0;
+      padding: 0;
+    }
+    .header {
+      background-color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--card-shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: var(--primary-color);
+    }
+    .header .actions button {
+      margin-left: 1rem;
+    }
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+    .main-container {
+      padding: 2rem;
+    }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .menu-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .menu-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .menu-card-content {
+      padding: 1rem;
+    }
+    .menu-card-content h3 {
+      margin: 0 0 0.5rem;
+    }
+    .menu-card-content p {
+      margin: 0 0 1rem;
+      color: var(--dark-gray);
+    }
+    .menu-card-actions {
+      margin-top: auto;
+      padding: 1rem;
+      border-top: 1px solid var(--gray);
+      display: flex;
+      gap: 0.5rem;
+    }
+    #loading { text-align: center; padding: 4rem; font-size: 1.2rem; color: var(--dark-gray); }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: auto;
+      padding: 30px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 500px;
+      position: relative;
+    }
+    .close-btn {
+      color: #aaa;
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--gray);
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    .form-group textarea { min-height: 80px; }
+    .form-group .checkbox-wrapper { display: flex; align-items: center; gap: 0.5rem; }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <h1>Painel do Cardápio</h1>
+    <div class="actions">
+      <button id="newItemBtn" class="btn btn-primary">Novo Item</button>
+      <button id="saveChangesBtn" class="btn btn-primary">Salvar Alterações</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div id="loading">Carregando cardápio...</div>
+    <div id="menuGrid" class="menu-grid"></div>
+  </main>
+
+  <!-- Edit/Add Modal -->
+  <div id="itemModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h2 id="modalTitle">Editar Item</h2>
+      <form id="itemForm">
+        <input type="hidden" id="modalItemId">
+        <div class="form-group">
+          <label for="name">Nome do Prato</label>
+          <input type="text" id="name" required>
+        </div>
+        <div class="form-group">
+          <label for="desc">Descrição</label>
+          <textarea id="desc"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="price">Preço</label>
+          <input type="number" id="price" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="cat">Categoria</label>
+          <select id="cat">
+            <option value="executivos">Executivos</option>
+            <option value="mineira">Mineira</option>
+            <option value="parmegiana">Parmegiana</option>
+            <option value="alacarte">A la Carte</option>
+            <option value="sucos">Sucos</option>
+            <option value="refri">Refrigerantes</option>
+            <option value="cervejas">Cervejas</option>
+            <option value="sobremesas">Sobremesas</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="img">Imagem</label>
+          <input type="file" id="img" accept="image/*">
+          <small>Envie uma nova imagem para alterá-la.</small>
+          <img id="img-preview" src="" style="max-width: 100px; margin-top: 10px; border-radius: 4px; display: none;">
+        </div>
+        <div class="form-group">
+          <div class="checkbox-wrapper">
+             <input type="checkbox" id="active">
+             <label for="active">Ativo no cardápio?</label>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- PWA Install Banner -->
+  <div id="pwa-install-banner" style="display: none; position: fixed; bottom: 0; width: 100%; background-color: #FFF8E6; padding: 1rem; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); display: flex; justify-content: center; align-items: center; gap: 1rem; z-index: 2000;">
+    <p style="margin: 0; color: #1A3C26; font-weight: 600;">Instale o painel para acesso rápido!</p>
+    <button id="pwa-install-btn" style="background-color: #1A3C26; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; font-weight: bold; cursor: pointer;">Instalar</button>
+  </div>
+
+  <script src="panel.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/admin/sw.js').then(registration => {
+          console.log('Admin ServiceWorker registration successful with scope: ', registration.scope);
+        }, err => {
+          console.log('Admin ServiceWorker registration failed: ', err);
+        });
+      });
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="theme-color" content="#1A3C26" />
+  <title>Ohana Snack House — Menu</title>
+
+  <link rel="manifest" href="manifest.json" />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@400;500;700&family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Topbar -->
+  <header class="topbar" id="topbar">
+    <div class="brand">
+      <div class="brand__logo-wrapper">
+        <img class="brand__logo" src="assets/img/logo-ohana.jpg" alt="Ohana" onerror="this.style.display='none'" />
+      </div>
+      <div class="brand__text">
+        <div class="brand__name">Ohana Snack House</div>
+        <div class="brand__sub">Gastronomia & Conforto</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Hero Section -->
+    <section class="hero-immersive">
+      <div class="hero__bg">
+        <img src="assets/img/hero-ohana.png" alt="Destaque Ohana" loading="lazy" />
+      </div>
+      
+      <div class="hero__content-overlay">
+        <div class="hero__badge" id="openStatus">Aberto todos os dias • 11:00 às 15:00</div>
+        
+        <h1 class="hero__title">Sabores que <br>abraçam.</h1>
+        <p class="hero__desc">Peça seus favoritos diretamente pelo WhatsApp.</p>
+        
+        <div class="hero__divider"></div>
+        
+        <div class="hero__address-box">
+          <div class="hero__address">Rua Rio Grande do Sul, 1097 — Centro<br>Poços de Caldas, MG</div>
+          <div class="hero__hours">Todos os dias • 11:00 às 15:00</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Barra de Categorias + Busca + Favoritos -->
+    <div class="sticky-nav-container">
+      <!-- Botão Lupa (Esquerda) -->
+      <button class="nav-icon-btn" id="toggleSearchBtn" aria-label="Buscar">🔎</button>
+      
+      <!-- Input de Busca -->
+      <div class="search-bar" id="searchBar">
+        <input type="text" id="searchInput" placeholder="O que você procura hoje?" autocomplete="off">
+        <button class="search-close" id="closeSearchBtn">✕</button>
+      </div>
+
+      <!-- Lista de Categorias (Centro) -->
+      <nav class="nav-scroll" id="chips"></nav>
+
+      <!-- Botão Favoritos (Direita) -->
+      <button class="nav-icon-btn" id="toggleFavsBtn" aria-label="Ver Favoritos">❤️</button>
+    </div>
+
+    <section class="menu-grid" id="menuGrid" aria-live="polite"></section>
+
+    <section class="empty-state" id="emptyState" hidden>
+      <div class="empty__icon">🍂</div>
+      <h3>Nenhum prato encontrado</h3>
+      <p>Tente outro termo ou verifique seus favoritos.</p>
+    </section>
+  </main>
+
+  <!-- Botão Flutuante (FAB) -->
+  <button class="fab-cart" id="openCartBtn" aria-label="Abrir sacola">
+    <span class="fab-cart__icon">🛍️</span>
+    <span class="fab-cart__count" id="cartCount">0</span>
+  </button>
+
+  <!-- Drawer: Sacola -->
+  <div class="overlay" id="overlay" hidden></div>
+
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawer__header">
+      <h2 class="drawer__title">Sua Seleção</h2>
+      <button class="close-btn" id="closeCartBtn" type="button">✕</button>
+    </div>
+
+    <div class="drawer__body">
+      <div class="drawer__status" id="drawerSub">0 itens</div>
+      <div id="cartList" class="cart-list"></div>
+
+      <div class="obs-section">
+        <label for="obsInput">Observações do Chef</label>
+        <textarea id="obsInput" rows="3" placeholder="Ponto da carne, retirar ingredientes, etc..."></textarea>
+      </div>
+    </div>
+
+    <div class="drawer__footer">
+      <div class="bill">
+        <div class="bill__row"><span>Subtotal</span><span id="subtotal">R$ 0,00</span></div>
+        <div class="bill__row bill__total"><span>Total</span><strong id="total">R$ 0,00</strong></div>
+      </div>
+
+      <button class="btn btn--gold btn--full" id="checkoutBtn" type="button">
+        <span>Enviar Pedido (WhatsApp)</span>
+        <span class="btn-arrow">→</span>
+      </button>
+      
+      <button class="btn-link" id="clearCartBtn" type="button">Esvaziar sacola</button>
+    </div>
+  </aside>
+
+  <footer class="footer">
+    <div class="footer__content">
+      <p>© <span id="year"></span> <strong>Ohana Snack House</strong>. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- PWA Install Banner -->
+  <div id="pwa-install-banner" style="display: none; position: fixed; bottom: 0; width: 100%; background-color: #FFF8E6; padding: 1rem; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); display: flex; justify-content: center; align-items: center; gap: 1rem; z-index: 2000;">
+    <p style="margin: 0; color: #1A3C26; font-weight: 600;">Instale nosso app para uma experiência melhor!</p>
+    <button id="pwa-install-btn" style="background-color: #1A3C26; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; font-weight: bold; cursor: pointer;">Instalar</button>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator && (window.location.protocol === 'http:' || window.location.protocol === 'https:')) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(e => console.log('SW ignorado em dev')));
+    }
+  </script>
+</body>
+</html>
