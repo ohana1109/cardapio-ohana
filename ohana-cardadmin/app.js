@@ -441,24 +441,47 @@ init();
 
 // --- PWA Install Prompt Logic ---
 let deferredPrompt;
-const installBanner = document.getElementById('pwa-install-banner');
+const installPopup = document.getElementById('pwa-install-popup');
+const installOverlay = document.getElementById('pwa-overlay');
 const installButton = document.getElementById('pwa-install-btn');
+const laterButton = document.getElementById('pwa-later-btn');
+
+function showInstallPopup() {
+  // Only show the prompt if it's available
+  if (deferredPrompt && installPopup && installOverlay) {
+    installPopup.style.display = 'block';
+    installOverlay.style.display = 'block';
+  }
+}
 
 window.addEventListener('beforeinstallprompt', (e) => {
+  // Do not show the prompt if the app is already installed
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    return;
+  }
   // Prevent the mini-infobar from appearing on mobile
   e.preventDefault();
   // Stash the event so it can be triggered later.
   deferredPrompt = e;
-  // Update UI to notify the user they can install the PWA
-  if (installBanner) {
-    installBanner.style.display = 'flex';
-  }
+  
+  // Wait 5 seconds before showing the popup
+  setTimeout(showInstallPopup, 5000);
+});
 
-  if (installButton) {
-    installButton.addEventListener('click', () => {
-      // Hide the app provided install promotion
-      installBanner.style.display = 'none';
-      // Show the install prompt
+if (laterButton) {
+  laterButton.addEventListener('click', () => {
+    installPopup.style.display = 'none';
+    installOverlay.style.display = 'none';
+  });
+}
+
+if (installButton) {
+  installButton.addEventListener('click', () => {
+    installPopup.style.display = 'none';
+    installOverlay.style.display = 'none';
+    
+    // Show the install prompt
+    if (deferredPrompt) {
       deferredPrompt.prompt();
       // Wait for the user to respond to the prompt
       deferredPrompt.userChoice.then((choiceResult) => {
@@ -469,6 +492,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
         }
         deferredPrompt = null;
       });
-    });
-  }
-});
+    }
+  });
+}
+

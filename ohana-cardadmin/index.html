@@ -20,7 +20,7 @@
   <header class="topbar" id="topbar">
     <div class="brand">
       <div class="brand__logo-wrapper">
-        <img class="brand__logo" src="assets/img/logo-ohana.jpg" alt="Ohana" onerror="this.style.display='none'" />
+        <img class="brand__logo" src="assets/img/logo-ohana.png" alt="Ohana" onerror="this.style.display='none'" />
       </div>
       <div class="brand__text">
         <div class="brand__name">Ohana Snack House</div>
@@ -124,10 +124,74 @@
     </div>
   </footer>
 
-  <!-- PWA Install Banner -->
-  <div id="pwa-install-banner" style="display: none; position: fixed; bottom: 0; width: 100%; background-color: #FFF8E6; padding: 1rem; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); display: flex; justify-content: center; align-items: center; gap: 1rem; z-index: 2000;">
-    <p style="margin: 0; color: #1A3C26; font-weight: 600;">Instale nosso app para uma experiência melhor!</p>
-    <button id="pwa-install-btn" style="background-color: #1A3C26; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; font-weight: bold; cursor: pointer;">Instalar</button>
+  <footer class="footer">
+    <div class="footer__content">
+      <p>© <span id="year"></span> <strong>Ohana Snack House</strong>. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- PWA Install Popup -->
+  <div id="pwa-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 1999;"></div>
+  <div id="pwa-install-popup" style="display: none;">
+    <style>
+      #pwa-install-popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 380px;
+        background-color: white;
+        color: #333;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+        z-index: 2000;
+        text-align: center;
+        animation: fade-in 0.3s ease-out;
+      }
+      @keyframes fade-in {
+        from { transform: translate(-50%, -40%); opacity: 0; }
+        to { transform: translate(-50%, -50%); opacity: 1; }
+      }
+      #pwa-install-popup h3 {
+        margin: 0 0 0.5rem;
+        font-size: 1.5rem;
+        color: var(--primary-color);
+      }
+      #pwa-install-popup p {
+        margin: 0 0 1.5rem;
+        font-size: 1.1rem;
+        line-height: 1.5;
+      }
+      .pwa-buttons {
+        display: flex;
+        gap: 1rem;
+      }
+      .pwa-buttons button {
+        flex: 1;
+        padding: 0.8rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+      #pwa-install-btn {
+        background-color: var(--primary-color);
+        color: white;
+      }
+      #pwa-later-btn {
+        background-color: var(--gray);
+        color: var(--dark-gray);
+      }
+    </style>
+    <h3>Instale nosso App</h3>
+    <p>Tenha acesso rápido ao nosso cardápio adicionando o app à sua tela inicial.</p>
+    <div class="pwa-buttons">
+      <button id="pwa-later-btn">Depois</button>
+      <button id="pwa-install-btn">Instalar</button>
+    </div>
   </div>
 
   <script src="app.js"></script>
