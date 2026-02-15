@@ -6,9 +6,9 @@ const ASSETS = [
   './styles.css',
   './app.js',
   './manifest.json',
-  './assets/img/icon-192.jpg',
-  './assets/img/icon-512.jpg',
-  './assets/img/hero-ohana.jpg'
+  './assets/img/icon-192.png',
+  './assets/img/icon-512.png',
+  './assets/img/hero-ohana.png'
 ];
 
 self.addEventListener('install', (event) => {
