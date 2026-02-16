@@ -1,4 +1,4 @@
-const CACHE = 'ohana-pwa-v1';
+const CACHE = 'ohana-pwa-v2';
 
 const ASSETS = [
   './',

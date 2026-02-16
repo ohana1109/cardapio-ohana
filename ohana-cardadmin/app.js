@@ -95,11 +95,63 @@ const state = {
   cart: JSON.parse(localStorage.getItem(LS.cart) || '{}'),
   notes: JSON.parse(localStorage.getItem(LS.notes) || '{}') // Armazena observações por ID { 'id-item': 'texto' }
 };
+let imageViewer;
+let imageViewerImg;
+let imageViewerCaption;
 
 function save(){
   localStorage.setItem(LS.favs, JSON.stringify([...state.favs]));
   localStorage.setItem(LS.cart, JSON.stringify(state.cart));
   localStorage.setItem(LS.notes, JSON.stringify(state.notes));
+}
+
+function ensureImageViewer(){
+  if (imageViewer) return;
+
+  const viewer = document.createElement('div');
+  viewer.id = 'image-viewer';
+  viewer.className = 'image-viewer';
+  viewer.hidden = true;
+  viewer.innerHTML = `
+    <button type="button" class="image-viewer__close" aria-label="Fechar imagem">×</button>
+    <div class="image-viewer__content">
+      <img class="image-viewer__img" alt="">
+      <div class="image-viewer__caption"></div>
+    </div>
+  `;
+
+  document.body.appendChild(viewer);
+  imageViewer = viewer;
+  imageViewerImg = viewer.querySelector('.image-viewer__img');
+  imageViewerCaption = viewer.querySelector('.image-viewer__caption');
+
+  viewer.querySelector('.image-viewer__close').onclick = closeImageViewer;
+  viewer.addEventListener('click', (e) => {
+    if (e.target === viewer) closeImageViewer();
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && imageViewer && !imageViewer.hidden) {
+      closeImageViewer();
+    }
+  });
+}
+
+function openImageViewer(src, title){
+  ensureImageViewer();
+  if (!imageViewer || !imageViewerImg) return;
+
+  imageViewerImg.src = src;
+  imageViewerImg.alt = title || 'Imagem do item';
+  if (imageViewerCaption) imageViewerCaption.textContent = title || '';
+  imageViewer.hidden = false;
+  document.body.classList.add('no-scroll');
+}
+
+function closeImageViewer(){
+  if (!imageViewer) return;
+  imageViewer.hidden = true;
+  document.body.classList.remove('no-scroll');
 }
 
 function buildChips(){
@@ -216,7 +268,7 @@ function render(){
       
       el.innerHTML = `
         <div class="card__media">
-          <img src="${item.img}" alt="${item.name}" loading="lazy" onerror="this.src='assets/img/hero-ohana.jpg'">
+          <img class="card__img" src="${item.img}" alt="${item.name}" loading="lazy" tabindex="0" role="button" aria-label="Ver imagem completa de ${item.name}" onerror="this.src='assets/img/hero-ohana.png'">
           <button class="card__fav" aria-label="Favoritar">${isFav ? '❤️' : '♡'}</button>
         </div>
         <div class="card__body">
@@ -234,6 +286,17 @@ function render(){
         toggleFav(item.id);
         render(); 
       };
+
+      const cardImg = el.querySelector('.card__img');
+      if (cardImg) {
+        cardImg.onclick = () => openImageViewer(cardImg.currentSrc || cardImg.src, item.name);
+        cardImg.onkeydown = (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openImageViewer(cardImg.currentSrc || cardImg.src, item.name);
+          }
+        };
+      }
       
       el.querySelector('.btn--add').onclick = () => {
         addToCart(item.id);
@@ -411,6 +474,7 @@ function checkOpenStatus() {
 }
 
 async function init(){
+  ensureImageViewer();
   if(els.year) els.year.textContent = new Date().getFullYear();
   await loadMenu();
   buildChips();
@@ -445,54 +509,77 @@ const installPopup = document.getElementById('pwa-install-popup');
 const installOverlay = document.getElementById('pwa-overlay');
 const installButton = document.getElementById('pwa-install-btn');
 const laterButton = document.getElementById('pwa-later-btn');
+const installTitle = installPopup ? installPopup.querySelector('h3') : null;
+const installText = installPopup ? installPopup.querySelector('p') : null;
+const isIOS = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
-function showInstallPopup() {
-  // Only show the prompt if it's available
-  if (deferredPrompt && installPopup && installOverlay) {
-    installPopup.style.display = 'block';
-    installOverlay.style.display = 'block';
+function openInstallPopup() {
+  if (!installPopup || !installOverlay) return;
+  installPopup.style.display = 'block';
+  installOverlay.style.display = 'block';
+}
+
+function closeInstallPopup() {
+  if (!installPopup || !installOverlay) return;
+  installPopup.style.display = 'none';
+  installOverlay.style.display = 'none';
+}
+
+function showIOSInstallTip() {
+  if (!isIOS || isStandalone || !installButton || !laterButton) return;
+  if (installTitle) installTitle.textContent = 'Adicionar na tela inicial';
+  if (installText) {
+    installText.textContent = 'No Safari, toque em Compartilhar e depois em Adicionar a Tela de Inicio.';
   }
+  installButton.textContent = 'Entendi';
+  installButton.disabled = true;
+  openInstallPopup();
 }
 
 window.addEventListener('beforeinstallprompt', (e) => {
-  // Do not show the prompt if the app is already installed
-  if (window.matchMedia('(display-mode: standalone)').matches) {
-    return;
-  }
-  // Prevent the mini-infobar from appearing on mobile
+  if (isStandalone) return;
   e.preventDefault();
-  // Stash the event so it can be triggered later.
   deferredPrompt = e;
-  
-  // Wait 5 seconds before showing the popup
-  setTimeout(showInstallPopup, 5000);
+
+  if (installButton) {
+    installButton.disabled = false;
+    installButton.textContent = 'Instalar';
+  }
+  window.setTimeout(() => {
+    if (deferredPrompt && !isStandalone) openInstallPopup();
+  }, 5000);
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredPrompt = null;
+  closeInstallPopup();
 });
 
 if (laterButton) {
   laterButton.addEventListener('click', () => {
-    installPopup.style.display = 'none';
-    installOverlay.style.display = 'none';
+    closeInstallPopup();
   });
 }
 
 if (installButton) {
-  installButton.addEventListener('click', () => {
-    installPopup.style.display = 'none';
-    installOverlay.style.display = 'none';
-    
-    // Show the install prompt
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      // Wait for the user to respond to the prompt
-      deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-          console.log('User accepted the install prompt');
-        } else {
-          console.log('User dismissed the install prompt');
-        }
-        deferredPrompt = null;
-      });
+  installButton.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    closeInstallPopup();
+
+    deferredPrompt.prompt();
+    const choiceResult = await deferredPrompt.userChoice;
+    if (choiceResult.outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+    } else {
+      console.log('User dismissed the install prompt');
     }
+    deferredPrompt = null;
   });
 }
 
+if (!isStandalone) {
+  window.setTimeout(() => {
+    if (!deferredPrompt) showIOSInstallTip();
+  }, 5000);
+}

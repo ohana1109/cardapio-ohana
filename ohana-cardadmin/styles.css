@@ -208,6 +208,7 @@ button { font-family: var(--font-body); border: none; background: none; cursor: 
 @media(min-width: 600px) { .card__media { height: 180px; } }
 .card__media img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
 .card:hover .card__media img { transform: scale(1.05); }
+.card__media .card__img { cursor: zoom-in; }
 
 .card__fav {
   position: absolute; top: 8px; right: 8px;
@@ -314,6 +315,48 @@ button { font-family: var(--font-body); border: none; background: none; cursor: 
 .bill__row { display: flex; justify-content: space-between; font-size: 14px; color: var(--text-muted); margin-bottom: 6px; }
 .bill__total { font-size: 20px; color: var(--primary); font-family: var(--font-heading); margin-top: 12px; padding-top: 12px; border-top: 1px dashed rgba(0,0,0,0.1); }
 
+/* --- IMAGE VIEWER --- */
+body.no-scroll { overflow: hidden; }
+.image-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 2100;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.86);
+  backdrop-filter: blur(3px);
+}
+.image-viewer[hidden] { display: none; }
+.image-viewer__img {
+  width: min(100%, 900px);
+  max-height: 84vh;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+}
+.image-viewer__caption {
+  margin-top: 10px;
+  color: #fff;
+  font-size: 14px;
+  text-align: center;
+}
+.image-viewer__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 50%;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  color: #122216;
+  background: #f2c866;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
 .btn--gold { background: var(--gold); color: #fff; padding: 16px; border-radius: 12px; width: 100%; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 15px rgba(197, 157, 95, 0.3); transition: transform 0.2s, background 0.2s; cursor: pointer; }
 .btn--gold:hover { background: var(--gold-hover); transform: translateY(-2px); }
 .btn-link { width: 100%; padding: 12px; font-size: 12px; color: var(--text-muted); text-decoration: underline; text-align: center; cursor: pointer; }
@@ -322,4 +365,3 @@ button { font-family: var(--font-body); border: none; background: none; cursor: 
 
 @keyframes fadeIn { to { opacity: 1; } }
 @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
